@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>The Hot Potato — Embrun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bevan&family=Work+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF2E2;
+    --cream-2:#F4E7CE;
+    --ink:#2B1C12;
+    --red:#B3121F;
+    --red-dark:#8C0E18;
+    --gold:#E8A93B;
+    --gold-dark:#C98A1F;
+    --green:#55643B;
+    --white:#FFFDF8;
+    --line: rgba(43,28,18,0.14);
+    --shadow: 0 10px 24px rgba(43,28,18,0.14);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    line-height:1.5;
+  }
+  h1,h2,h3, .display{
+    font-family:'Bevan', serif;
+    font-weight:400;
+    line-height:1.05;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+  a{color:inherit;}
+  img,svg{display:block;max-width:100%;}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    position:sticky;top:0;z-index:50;
+    background:var(--cream);
+    border-bottom:2px solid var(--ink);
+  }
+  .topbar-inner{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;max-width:1120px;margin:0 auto;gap:16px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{width:38px;height:38px;flex:none;}
+  .brand-name{font-family:'Bevan',serif;font-size:20px;color:var(--red);}
+  .status-pill{
+    display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink);
+  }
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(85,100,59,0.18);}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--red);color:var(--white);
+    font-family:'Work Sans',sans-serif;font-weight:700;font-size:14.5px;
+    padding:12px 20px;border-radius:6px;border:2px solid var(--ink);
+    text-decoration:none;cursor:pointer;
+    box-shadow:3px 3px 0 var(--ink);
+    transition:transform .15s ease, box-shadow .15s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink);}
+  .btn:active{transform:translate(0,0);box-shadow:1px 1px 0 var(--ink);}
+  .btn.ghost{background:transparent;color:var(--ink);box-shadow:2px 2px 0 var(--ink);}
+  .topbar .btn{display:none;}
+  @media(min-width:720px){ .topbar .btn{display:inline-flex;} }
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(232,169,59,0.35), transparent 55%),
+      linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
+    color:var(--white);
+    overflow:hidden;
+    border-bottom:6px solid var(--ink);
+  }
+  .hero-inner{
+    max-width:1120px;margin:0 auto;padding:64px 24px 48px;
+    display:grid;grid-template-columns:1.15fr 0.85fr;gap:36px;align-items:center;
+  }
+  @media(max-width:860px){ .hero-inner{grid-template-columns:1fr;padding-top:44px;} }
+  .eyebrow-note{
+    font-size:14.5px; color:var(--gold); font-weight:600;
+  }
+  .hero h1{
+    font-size:clamp(38px,6vw,64px);
+    color:var(--white);
+    margin-top:10px;
+    text-shadow:3px 3px 0 rgba(0,0,0,0.18);
+  }
+  .hero p.sub{
+    margin-top:16px;font-size:18px;max-width:44ch;color:#FDEFDA;
+  }
+  .hero-actions{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;}
+  .hero-actions .btn.ghost{color:var(--white);border-color:var(--white);box-shadow:3px 3px 0 rgba(0,0,0,0.35);}
+
+  /* rotating chalkboard ticker */
+  .ticker{
+    margin-top:34px;background:rgba(0,0,0,0.22);
+    border:2px dashed rgba(255,253,248,0.5);
+    border-radius:8px;padding:12px 16px;
+    display:flex;align-items:center;gap:12px;
+    max-width:520px;
+    font-size:15px;
+  }
+  .ticker-label{font-weight:700;color:var(--gold);flex:none;font-size:13px;letter-spacing:.3px;}
+  .ticker-track{position:relative;height:22px;overflow:hidden;flex:1;}
+  .ticker-item{
+    position:absolute;inset:0;opacity:0;transform:translateY(8px);
+    animation:tickerRotate 9s infinite;
+    display:flex;align-items:center;gap:8px;
+  }
+  .ticker-item:nth-child(1){animation-delay:0s;}
+  .ticker-item:nth-child(2){animation-delay:3s;}
+  .ticker-item:nth-child(3){animation-delay:6s;}
+  @keyframes tickerRotate{
+    0%{opacity:0;transform:translateY(8px);}
+    5%{opacity:1;transform:translateY(0);}
+    28%{opacity:1;transform:translateY(0);}
+    33%{opacity:0;transform:translateY(-8px);}
+    100%{opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .ticker-item{animation:none;position:relative;opacity:1;display:none;}
+    .ticker-item:first-child{display:flex;}
+  }
+
+  /* hero art: paper fry cone illustration */
+  .hero-art{display:flex;justify-content:center;align-items:flex-end;}
+  .hero-art svg{width:min(320px,80%);height:auto;}
+
+  /* ---------- order card ---------- */
+  .order-section{margin-top:-64px;position:relative;z-index:10;}
+  .order-card{
+    background:var(--white);
+    border:2px solid var(--ink);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    padding:28px;
+    display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;
+  }
+  @media(max-width:720px){ .order-card{grid-template-columns:1fr;} }
+  .order-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .order-field{
+    flex:1;min-width:220px;
+    border:1.5px solid var(--line);border-radius:8px;padding:10px 14px;
+    background:var(--cream);
+  }
+  .order-field .k{font-size:11.5px;text-transform:uppercase;letter-spacing:.6px;color:var(--red);font-weight:700;}
+  .order-field .v{font-size:15px;margin-top:2px;font-weight:600;}
+  .order-field .v small{display:block;font-weight:400;font-size:13px;color:#6b5c4c;margin-top:1px;}
+
+  /* ---------- section shell ---------- */
+  section{padding:64px 0;}
+  .section-head{max-width:60ch;margin-bottom:34px;}
+  .section-head h2{font-size:clamp(26px,4vw,36px);color:var(--red);}
+  .section-head p{margin-top:10px;color:#5c4a3a;font-size:16px;}
+
+  /* ---------- menu ---------- */
+  .menu-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px;}
+  .menu-tab{
+    font-family:'Work Sans';font-weight:600;font-size:14px;
+    padding:8px 16px;border-radius:999px;border:1.5px solid var(--ink);
+    background:var(--white);cursor:default;
+  }
+  .menu-tab.active{background:var(--gold);}
+  .menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;}
+  .dish{
+    background:var(--white);border:1.5px solid var(--line);border-radius:10px;
+    padding:20px;display:flex;flex-direction:column;gap:10px;
+    transition:border-color .15s ease;
+  }
+  .dish:hover{border-color:var(--red);}
+  .dish-icon{width:52px;height:52px;}
+  .dish h3{font-size:17px;font-family:'Work Sans';font-weight:700;color:var(--ink);}
+  .dish p{margin:0;font-size:14px;color:#6b5c4c;flex:1;}
+  .dish .tag{
+    align-self:flex-start;font-size:11.5px;font-weight:700;color:var(--green);
+    background:rgba(85,100,59,0.12);padding:3px 9px;border-radius:5px;
+  }
+
+  /* ---------- gallery / rotating showcase ---------- */
+  .showcase{
+    background:var(--ink);color:var(--cream);border-radius:14px;
+    padding:40px 28px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:center;
+  }
+  @media(max-width:800px){ .showcase{grid-template-columns:1fr;} }
+  .showcase h2{color:var(--gold);font-size:clamp(24px,3.4vw,32px);}
+  .showcase p{color:#E9DFC9;margin-top:12px;font-size:15px;}
+  .carousel{position:relative;height:260px;}
+  .slide{
+    position:absolute;inset:0;border-radius:10px;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+    opacity:0;animation:slideRotate 12s infinite;
+    border:2px solid rgba(251,242,226,0.25);
+  }
+  .slide:nth-child(1){background:linear-gradient(160deg,#8C0E18,#5c0a10);animation-delay:0s;}
+  .slide:nth-child(2){background:linear-gradient(160deg,#C98A1F,#8a5e12);animation-delay:4s;}
+  .slide:nth-child(3){background:linear-gradient(160deg,#55643B,#37401f);animation-delay:8s;}
+  .slide svg{width:96px;height:96px;}
+  .slide span{font-family:'Bevan';font-size:19px;color:var(--cream);}
+  @keyframes slideRotate{
+    0%{opacity:0;}
+    3%{opacity:1;}
+    30%{opacity:1;}
+    36%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .slide{animation:none;position:relative;opacity:1;display:none;height:260px;}
+    .slide:first-child{display:flex;}
+  }
+
+  /* ---------- testimonials ---------- */
+  .testi-wrap{position:relative;max-width:720px;margin:0 auto;text-align:center;min-height:150px;}
+  .testi{
+    position:absolute;inset:0;opacity:0;animation:testiRotate 15s infinite;
+    display:flex;flex-direction:column;align-items:center;gap:14px;
+  }
+  .testi:nth-child(1){animation-delay:0s;}
+  .testi:nth-child(2){animation-delay:5s;}
+  .testi:nth-child(3){animation-delay:10s;}
+  .testi p{font-size:19px;font-style:italic;color:var(--ink);max-width:52ch;}
+  .testi .stars{color:var(--gold-dark);font-size:16px;letter-spacing:2px;}
+  .testi .who{font-size:13.5px;color:#6b5c4c;font-weight:600;}
+  @keyframes testiRotate{
+    0%{opacity:0;transform:translateY(6px);}
+    4%{opacity:1;transform:translateY(0);}
+    30%{opacity:1;}
+    34%{opacity:0;}
+    100%{opacity:0;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .testi{animation:none;position:relative;opacity:1;display:none;}
+    .testi:first-child{display:flex;}
+    .testi-wrap{min-height:auto;}
+  }
+
+  /* ---------- hours/footer ---------- */
+  .hours-block{
+    background:var(--cream-2);border:1.5px solid var(--line);border-radius:12px;
+    padding:28px;display:grid;grid-template-columns:1fr 1fr;gap:28px;
+  }
+  @media(max-width:700px){ .hours-block{grid-template-columns:1fr;} }
+  .hours-list{list-style:none;margin:0;padding:0;font-size:14.5px;}
+  .hours-list li{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed var(--line);}
+  .hours-list li.today{font-weight:700;color:var(--red);}
+
+  footer{
+    background:var(--ink);color:#D9CBB3;padding:36px 0;font-size:13.5px;
+  }
+  footer .wrap{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;align-items:center;}
+  footer a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <svg class="brand-mark" viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="22" fill="#B3121F" stroke="#2B1C12" stroke-width="2"/>
+        <path d="M14 26c0-7 4-13 10-13s10 6 10 13-4 9-10 9-10-2-10-9z" fill="#E8A93B" stroke="#2B1C12" stroke-width="1.5"/>
+        <circle cx="20" cy="23" r="1.4" fill="#2B1C12"/>
+        <circle cx="27" cy="21" r="1.4" fill="#2B1C12"/>
+        <circle cx="23" cy="28" r="1.4" fill="#2B1C12"/>
+      </svg>
+      <span class="brand-name">The Hot Potato</span>
+    </div>
+    <div class="status-pill">
+      <span class="dot"></span> Open until 8:00&nbsp;PM &middot; Embrun, ON
+    </div>
+    <a class="btn" href="https://thp-embrun.square.site/?location=MEVH8PKMZW202&menu=#ICBRESTH6LCW2ZPXXKNUBZGH">Start an order</a>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow-note">Chip truck &amp; comfort food, 654 Notre Dame St</div>
+      <h1>Hot, fresh, and worth&nbsp;the&nbsp;wait.</h1>
+      <p class="sub">Hand-cut fries, loaded poutine, and burgers off the flat-top — order ahead online and skip the line at the window.</p>
+      <div class="hero-actions">
+        <a class="btn" href="https://thp-embrun.square.site/?location=MEVH8PKMZW202&menu=#ICBRESTH6LCW2ZPXXKNUBZGH">Order for pickup</a>
+        <a class="btn ghost" href="#menu">See the menu</a>
+      </div>
+      <div class="ticker">
+        <span class="ticker-label">TODAY</span>
+        <div class="ticker-track">
+          <span class="ticker-item">🥔 Classic Poutine — cheese curds, fresh gravy</span>
+          <span class="ticker-item">🥓 Bacon Double Cheeseburger — off the flat-top</span>
+          <span class="ticker-item">🌯 Chicken Wrap — a lighter regular favourite</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-art">
+      <svg viewBox="0 0 220 260" fill="none">
+        <path d="M40 250 L60 90 L160 90 L180 250 Z" fill="#FBF2E2" stroke="#2B1C12" stroke-width="3"/>
+        <path d="M55 100 L60 90 L160 90 L165 100 Z" fill="#B3121F" stroke="#2B1C12" stroke-width="3"/>
+        <g stroke="#2B1C12" stroke-width="3" stroke-linecap="round">
+          <line x1="75" y1="95" x2="65" y2="20"/>
+          <line x1="95" y1="92" x2="88" y2="10"/>
+          <line x1="115" y1="90" x2="115" y2="8"/>
+          <line x1="135" y1="92" x2="142" y2="14"/>
+          <line x1="150" y1="96" x2="162" y2="26"/>
+        </g>
+        <g fill="#E8A93B" stroke="#2B1C12" stroke-width="3" stroke-linejoin="round">
+          <rect x="59" y="10" width="12" height="90" rx="2" transform="rotate(-6 65 55)"/>
+          <rect x="82" y="0" width="12" height="96" rx="2" transform="rotate(-3 88 48)"/>
+          <rect x="109" y="0" width="12" height="94" rx="2"/>
+          <rect x="136" y="4" width="12" height="92" rx="2" transform="rotate(4 142 50)"/>
+          <rect x="156" y="16" width="12" height="88" rx="2" transform="rotate(10 162 60)"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+</header>
+
+<div class="wrap order-section">
+  <div class="order-card">
+    <div>
+      <div class="order-row">
+        <div class="order-field">
+          <div class="k">Pickup location</div>
+          <div class="v">The Hot Potato — Embrun<small>654 Notre Dame St, Embrun, ON K0A 1W1</small></div>
+        </div>
+        <div class="order-field">
+          <div class="k">Pickup time</div>
+          <div class="v">As soon as possible<small>Ready in about 15–20 min</small></div>
+        </div>
+        <div class="order-field">
+          <div class="k">Hours today</div>
+          <div class="v">11:00 AM – 8:00 PM<small>Open now</small></div>
+        </div>
+      </div>
+    </div>
+    <a class="btn" href="https://thp-embrun.square.site/?location=MEVH8PKMZW202&menu=#ICBRESTH6LCW2ZPXXKNUBZGH">Start your order &rarr;</a>
+  </div>
+</div>
+
+<section id="menu">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>What we're known for</h2>
+      <p>A short list of the regulars' favourites — the full build-your-own poutine and sandwich menu is one tap away.</p>
+    </div>
+    <div class="menu-tabs">
+      <span class="menu-tab active">Poutines</span>
+      <span class="menu-tab">Burgers &amp; sandwiches</span>
+      <span class="menu-tab">Sides</span>
+      <span class="menu-tab">Wraps</span>
+    </div>
+    <div class="menu-grid">
+      <div class="dish">
+        <svg class="dish-icon" viewBox="0 0 48 48"><rect x="10" y="18" width="28" height="20" rx="3" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/><path d="M12 18l3-10h18l3 10" fill="none" stroke="#2B1C12" stroke-width="2"/><circle cx="18" cy="26" r="2" fill="#fff" stroke="#2B1C12"/><circle cx="26" cy="30" r="2" fill="#fff" stroke="#2B1C12"/><circle cx="32" cy="24" r="2" fill="#fff" stroke="#2B1C12"/></svg>
+        <h3>Classic Poutine</h3>
+        <p>Hand-cut fries, squeaky cheese curds, fresh brown gravy. The one that built the truck's reputation.</p>
+        <span class="tag">Most ordered</span>
+      </div>
+      <div class="dish">
+        <svg class="dish-icon" viewBox="0 0 48 48"><rect x="10" y="18" width="28" height="20" rx="3" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/><path d="M12 18l3-10h18l3 10" fill="none" stroke="#2B1C12" stroke-width="2"/><path d="M14 22c6 4 14 4 20 0" stroke="#B3121F" stroke-width="3" fill="none"/></svg>
+        <h3>Pulled Pork Poutine</h3>
+        <p>Slow-cooked pulled pork piled over the classic build, finished with extra gravy.</p>
+      </div>
+      <div class="dish">
+        <svg class="dish-icon" viewBox="0 0 48 48"><circle cx="24" cy="24" r="16" fill="#B3121F" stroke="#2B1C12" stroke-width="2"/><rect x="10" y="21" width="28" height="6" fill="#E8A93B"/></svg>
+        <h3>Bacon Double Cheeseburger</h3>
+        <p>Two smashed patties, crisp bacon, melted cheese — the flat-top favourite people drive back for.</p>
+        <span class="tag">Local favourite</span>
+      </div>
+      <div class="dish">
+        <svg class="dish-icon" viewBox="0 0 48 48"><rect x="8" y="20" width="32" height="6" rx="3" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/><rect x="8" y="28" width="32" height="6" rx="3" fill="#fff" stroke="#2B1C12" stroke-width="2"/></svg>
+        <h3>Hot Dog, loaded</h3>
+        <p>Grilled all-beef dog with your choice of classic toppings, ready in minutes.</p>
+      </div>
+      <div class="dish">
+        <svg class="dish-icon" viewBox="0 0 48 48"><path d="M24 8c9 0 16 7 16 16H8c0-9 7-16 16-16z" fill="#B3121F" stroke="#2B1C12" stroke-width="2"/><rect x="8" y="24" width="32" height="6" rx="3" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/></svg>
+        <h3>Chicken Wrap</h3>
+        <p>Grilled chicken, crisp veg, and sauce in a soft tortilla — a lighter regular pick.</p>
+      </div>
+      <div class="dish">
+        <svg class="dish-icon" viewBox="0 0 48 48"><circle cx="16" cy="24" r="6" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/><circle cx="24" cy="20" r="6" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/><circle cx="32" cy="26" r="6" fill="#E8A93B" stroke="#2B1C12" stroke-width="2"/></svg>
+        <h3>Onion Rings</h3>
+        <p>Battered fresh and fried to order — a favourite side to add to any combo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="showcase">
+      <div>
+        <h2>Made to order, every time</h2>
+        <p>Nothing sits under a heat lamp. Every order goes on the flat-top or into the fryer once it hits the ticket rail — that's the trade-off for the wait, and why regulars come back.</p>
+        <div style="margin-top:22px;"><a class="btn ghost" style="color:#FBF2E2;border-color:#FBF2E2;" href="https://thp-embrun.square.site/?location=MEVH8PKMZW202&menu=#ICBRESTH6LCW2ZPXXKNUBZGH">Order ahead, skip the line</a></div>
+      </div>
+      <div class="carousel">
+        <div class="slide">
+          <svg viewBox="0 0 96 96"><rect x="20" y="30" width="56" height="40" rx="6" fill="#FBF2E2"/><circle cx="35" cy="50" r="4" fill="#8C0E18"/><circle cx="48" cy="55" r="4" fill="#8C0E18"/><circle cx="61" cy="48" r="4" fill="#8C0E18"/></svg>
+          <span>Fresh-cut fries, daily</span>
+        </div>
+        <div class="slide">
+          <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="26" fill="#FBF2E2"/><rect x="22" y="42" width="52" height="10" fill="#8a5e12"/></svg>
+          <span>Off the flat-top</span>
+        </div>
+        <div class="slide">
+          <svg viewBox="0 0 96 96"><path d="M48 16c16 0 28 12 28 28H20c0-16 12-28 28-28z" fill="#FBF2E2"/><rect x="20" y="44" width="56" height="10" rx="5" fill="#37401f"/></svg>
+          <span>Toppings, your way</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head" style="margin:0 auto 34px;text-align:center;max-width:100%;">
+      <h2>What regulars say</h2>
+    </div>
+    <div class="testi-wrap">
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>"The poutine here is the best around — loaded with cheese and gravy, and worth the wait when it gets busy."</p>
+        <div class="who">— Google review</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★★</div>
+        <p>"Friendly staff, generous portions, and fair prices. Everything came out hot and fresh."</p>
+        <div class="who">— Google review</div>
+      </div>
+      <div class="testi">
+        <div class="stars">★★★★☆</div>
+        <p>"Solid poutine and burgers — that classic chip-wagon taste done right."</p>
+        <div class="who">— Google review</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="hours-block">
+      <div>
+        <h3 style="font-family:'Work Sans';font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:var(--red);margin-bottom:14px;">Hours</h3>
+        <ul class="hours-list">
+          <li><span>Monday</span><span>11:00 AM – 7:00 PM</span></li>
+          <li><span>Tuesday</span><span>11:00 AM – 7:00 PM</span></li>
+          <li><span>Wednesday</span><span>11:00 AM – 7:00 PM</span></li>
+          <li class="today"><span>Thursday</span><span>11:00 AM – 8:00 PM</span></li>
+          <li><span>Friday</span><span>11:00 AM – 8:00 PM</span></li>
+          <li><span>Saturday</span><span>11:00 AM – 8:00 PM</span></li>
+          <li><span>Sunday</span><span>11:00 AM – 8:00 PM</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3 style="font-family:'Work Sans';font-size:15px;text-transform:uppercase;letter-spacing:.5px;color:var(--red);margin-bottom:14px;">Find us</h3>
+        <p style="margin:0 0 6px;font-weight:600;">654 Notre Dame St, Embrun, ON K0A 1W1</p>
+        <p style="margin:0 0 16px;color:#6b5c4c;font-size:14.5px;">(613) 715-0778</p>
+        <a class="btn" href="https://thp-embrun.square.site/?location=MEVH8PKMZW202&menu=#ICBRESTH6LCW2ZPXXKNUBZGH">Order for pickup</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>&copy; The Hot Potato, Embrun ON</span>
+    <a href="https://thp-embrun.square.site/?location=MEVH8PKMZW202&menu=#ICBRESTH6LCW2ZPXXKNUBZGH">Order online</a>
+  </div>
+</footer>
+
+</body>
+</html>
